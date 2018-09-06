@@ -9,8 +9,8 @@ using namespace std;
 char texto[30];
 GLint tipo;
 int xclick, yclick;
-int quadrados [6][5], erros = 0, acertos = 0, rodadas = 0, cliques = 10;
-bool primeiro_desenho = true;
+int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques = 10;
+bool primeiro_desenho = true, clicado = false;
 
 
 void display()
@@ -109,11 +109,11 @@ void TelaMemoriaFacil()
     return;
 }
 
-void MemoriaFacil()
+void MemoriaFacil(int x, int y)
 {
     if(rodadas<5){
         TelaMemoriaFacil();
-        if(cliques>1)
+        if(cliques>0)
         {
             if(!primeiro_desenho)
             { 
@@ -139,12 +139,127 @@ void MemoriaFacil()
             primeiro_desenho = true;
             rodadas++;
         }
-        //Acaba após 5 rodadas
-        //Contabiliza mais erros que o esperado
-        //O último quadrado clicado da ultima rodada fica azul na proxima rodada
     }
     else
     {
+        //fazer texto aparecer na tela
+        cout << "Erros: " << erros << " Acertos: " << acertos << endl;
+    }
+    return;
+}
+
+void TelaMemoriaDificil()
+{
+    int num_coloridos = 0; 
+    if (primeiro_desenho)
+    {
+        primeiro_desenho = false;
+        glColor3f(0.91f, 0.91f, 0.70f); 
+        for(int i=0;i<10; i++)
+        {
+            for(int j=0; j<8; j++)
+            {
+                DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
+            }
+        }
+        Sleep(2000);
+        for(int i=0;i<10; i++)
+        {
+            for(int j=0; j<8; j++)
+            {
+                if(num_coloridos<10 && ((rand() % 10) > 8))
+                {
+                    quadrados[i][j] = 1;
+                    num_coloridos++;
+                }
+                else
+                {
+                    quadrados[i][j] = 0;
+                }
+                
+            }
+        }   
+        for(int i=0;i<10; i++)
+        {
+            for(int j=0; j<8; j++)
+            {
+                if(quadrados[i][j]==1)
+                {
+                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
+                } 
+            }
+        }
+        Sleep(2000);
+        for(int i=0;i<10; i++)
+        {
+            for(int j=0; j<8; j++)
+            {
+                if(quadrados[i][j]==1)
+                {
+                    glColor3f(0.91f, 0.91f, 0.70f); 
+                    DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
+                } 
+            }
+        }
+    }
+    else
+    {
+        for(int i=0;i<10; i++)
+        {
+            for(int j=0; j<8; j++)
+            {
+                if(quadrados[i][j]==2)
+                {
+                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
+                } 
+                else
+                {
+                    glColor3f(0.91f, 0.91f, 0.70f); 
+                    DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
+                }
+            }
+        }
+        glFlush();
+    }
+    return;
+}
+
+void MemoriaDificil(int x, int y)
+{
+    if(rodadas<5){
+        TelaMemoriaDificil();
+        if(cliques>0)
+        {
+            if(!primeiro_desenho)
+            { 
+                int j = (xclick-30)/49, i = (yclick-20)/49;
+                cliques--;
+                if(quadrados[i][j]==1)
+                {
+                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
+                    quadrados[i][j] = 2; 
+                    acertos++;
+                }
+                else
+                {
+                    erros++;
+                }
+                glFlush();
+            }
+        }
+        else
+        {
+            cliques = 10;
+            primeiro_desenho = true;
+            rodadas++;
+        }
+    }
+    else
+    {
+        //fazer texto aparecer na tela
         cout << "Erros: " << erros << " Acertos: " << acertos << endl;
     }
     return;
@@ -156,8 +271,11 @@ void Desenha(void)
 
      switch(tipo)
      {
-         case 1:
-            MemoriaFacil();
+        case 1:
+            TelaMemoriaFacil();
+            break;
+        case 2:
+            TelaMemoriaDificil();
             break;
      }
      glFlush();
@@ -168,9 +286,17 @@ void MenuMemoria(int op)
    switch(op) {
             case 00:
                 tipo = 1;
+                erros = 0;
+                acertos = 0; rodadas = 0;
+                cliques = 10;
+                primeiro_desenho = true;
                 break;
             case 01:
-                //chamar memoria dificil
+                tipo = 2;
+                erros = 0;
+                acertos = 0; rodadas = 0;
+                cliques = 10;
+                primeiro_desenho = true;
                 break;
     }
     glutPostRedisplay();
@@ -197,7 +323,8 @@ void MenuPrincipal(int op)
                 //chamar batalha naval
                 break;
             case 3:
-                glutDestroyWindow(glutGetWindow());;
+                glutDestroyWindow(glutGetWindow());
+                exit(0);
                 break;
     }
 }
@@ -237,8 +364,27 @@ void Inicializa (void)
 
 void HandleMouse(int button, int state, int x, int y)
 {
-    yclick = 500-y;
-    xclick = x;
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !clicado)
+	{
+		clicado = true;
+		xclick = x;
+		yclick = y;
+	}
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP && clicado)
+	{
+		clicado = false;
+        xclick = x;
+		yclick = 500-y;
+        switch(tipo)
+        {
+            case 1:
+                MemoriaFacil(xclick,yclick);;
+                break;
+            case 2:
+                MemoriaDificil(xclick,yclick);
+                break;
+        }
+	}
 }
 
 int main(int argc, char** argv)
