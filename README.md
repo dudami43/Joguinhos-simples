@@ -1,15 +1,3 @@
-# Simulador de voo
-
-Esse projeto é um simulador de voo construído com OpenGL 2.1 e FreeGlut para a disciplina de INF 390 - Computação Gráfica da Universidade Federal de Viçosa (UFV)
-
-
-### Load OBJ files
-
- ```cpp
-Model model;
-OBJ obj("<nome_do_arquivo>");
-obj.load(model);
-```
 
 ### Tech
 * [gcc]
