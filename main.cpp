@@ -9,7 +9,7 @@ using namespace std;
 char texto[30];
 GLint tipo;
 int xclick, yclick;
-int quadrados [6][5], erros = 0, acertos = 0;
+int quadrados [6][5], erros = 0, acertos = 0, rodadas = 0, cliques = 10;
 bool primeiro_desenho = true;
 
 
@@ -111,36 +111,41 @@ void TelaMemoriaFacil()
 
 void MemoriaFacil()
 {
-    TelaMemoriaFacil();
-    if(!primeiro_desenho)
+    if(rodadas<5){
+        TelaMemoriaFacil();
+        if(cliques>1)
+        {
+            if(!primeiro_desenho)
+            { 
+                int j = (xclick-25)/80, i = (yclick-10)/80;
+                cliques--;
+                if(quadrados[i][j]==1)
+                {
+                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1));
+                    quadrados[i][j] = 2; 
+                    acertos++;
+                }
+                else
+                {
+                    erros++;
+                }
+                glFlush();
+            }
+        }
+        else
+        {
+            cliques = 10;
+            primeiro_desenho = true;
+            rodadas++;
+        }
+        //Acaba após 5 rodadas
+        //Contabiliza mais erros que o esperado
+        //O último quadrado clicado da ultima rodada fica azul na proxima rodada
+    }
+    else
     {
-        /*int i = (xclick-25)/80, j = (yclick-10)/80;
-        if(quadrados[j][i]==1)
-        {
-            glColor3f(0.0f, 0.1f, 0.7f); 
-            DesenhaQuadrado(25+(80*i),25+(80*i),15+(80*(i+1)),15+(80*(i+1)),80*(j+1),10+(80*j),10+(80*j),80*(j+1));
-            quadrados[j][i] = 2; 
-            acertos++;
-        }
-        else
-        {
-            //cout << "CLIQUEI ERRADO" << endl;
-            erros++;
-        }*/   
-        int j = (xclick-25)/80, i = (yclick-10)/80;
-        if(quadrados[i][j]==1)
-        {
-            glColor3f(0.0f, 0.1f, 0.7f); 
-            DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1));
-            quadrados[i][j] = 2; 
-            acertos++;
-        }
-        else
-        {
-            //cout << "CLIQUEI ERRADO" << endl;
-            erros++;
-        }
-        glFlush();
+        cout << "Erros: " << erros << " Acertos: " << acertos << endl;
     }
     return;
 }
