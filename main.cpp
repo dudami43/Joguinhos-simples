@@ -3,37 +3,20 @@
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
+#include <ctime>
 using namespace std;
 
 char texto[30];
-GLfloat win, r, g, b;
-GLint view_w, view_h, tipo;
+GLint tipo;
 int xclick, yclick;
+int quadrados [6][5], erros = 0, acertos = 0;
+bool primeiro_desenho = true;
+
 
 void display()
 {
     glClearColor( 0, 0, 0, 1 );
     glClear( GL_COLOR_BUFFER_BIT );
-
-    /*glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glOrtho( -1.1, 1.1, -1.1, 1.1, -1, 1 );
-
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-
-    const unsigned int gridSize = 50;
-    glBegin(GL_LINES);
-    for( unsigned int j = 0; j <= gridSize; ++j )
-    {
-        const float i = -1.0f + ( j * 2.0f/(gridSize) );
-        glVertex2f(i, 1.0f);
-        glVertex2f(i, -1.0f);
-        glVertex2f(-1.0f, i);
-        glVertex2f(1.0f, i);
-    }
-    glEnd();*/
-
     glutSwapBuffers();
 }
 
@@ -48,90 +31,118 @@ void DesenhaQuadrado(int x1, int x2, int x3, int x4, int y1, int y2, int y3,int 
      glFlush();
 }
 
-void MemoriaFacil()
+void TelaMemoriaFacil()
 {
-    int rodadas = 0, erros = 0, acertos = 0, cliques;
-    //while (rodadas<5)
-    //{
-        cliques = 0;
+    int num_coloridos = 0; 
+    if (primeiro_desenho)
+    {
+        primeiro_desenho = false;
         glColor3f(0.91f, 0.91f, 0.70f); 
-        //Desenhar quadrados beges
-        for(int j=0;j<6; j++)
+        for(int i=0;i<6; i++)
         {
-            for(int i=0; i<5; i++)
+            for(int j=0; j<5; j++)
             {
-                DesenhaQuadrado(25+(80*i),25+(80*i),15+(80*(i+1)),15+(80*(i+1)),80*(j+1),10+(80*j),10+(80*j),80*(j+1));   
+                DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1));   
             }
         }
-
         Sleep(2000);
-
-        int quadrados [6][5];
-        //Inicializar matriz equivalente aos quadrados com 0 ou 1 
-        //No mínimo 5 e no máximo 10 quadrados poderão ser coloridos
-        int x = 0; //número de quadrados coloridos
-        while(x<5){
-            for(int j=0;j<6; j++){
-                for(int i=0; i<5; i++)
+        for(int i=0;i<6; i++)
+        {
+            for(int j=0; j<5; j++)
+            {
+                if(num_coloridos<10 && ((rand() % 10) > 5))
                 {
-                    if(x<10 && ((rand() % 10) > 5))
-                    {
-                        quadrados[j][i] = 1;
-                        x++;
-                    }
-                    else if(quadrados[j][i]!=1)
-                    {
-                        quadrados[j][i] = 0;
-                    }
-                    
+                    quadrados[i][j] = 1;
+                    num_coloridos++;
+                }
+                else
+                {
+                    quadrados[i][j] = 0;
+                }
+                
+            }
+        }   
+        for(int i=0;i<6; i++)
+        {
+            for(int j=0; j<5; j++)
+            {
+                if(quadrados[i][j]==1)
+                {
+                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1)); 
+                } 
+            }
+        }
+        Sleep(2000);
+        for(int i=0;i<6; i++)
+        {
+            for(int j=0; j<5; j++)
+            {
+                if(quadrados[i][j]==1)
+                {
+                    glColor3f(0.91f, 0.91f, 0.70f); 
+                    DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1)); 
+                } 
+            }
+        }
+    }
+    else
+    {
+        for(int i=0;i<6; i++)
+        {
+            for(int j=0; j<5; j++)
+            {
+                if(quadrados[i][j]==2)
+                {
+                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1)); 
+                } 
+                else
+                {
+                    glColor3f(0.91f, 0.91f, 0.70f); 
+                    DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1)); 
                 }
             }
         }
+        glFlush();
+    }
+    return;
+}
 
-        //Colorir os quadrados sorteados
-        for(int j=0;j<6; j++){
-            for(int i=0; i<5; i++)
-            {
-                if(quadrados[j][i])
-                {
-                    glColor3f(0.0f, 0.1f, 0.7f); 
-                    DesenhaQuadrado(25+(80*i),25+(80*i),15+(80*(i+1)),15+(80*(i+1)),80*(j+1),10+(80*j),10+(80*j),80*(j+1)); 
-                } 
-            }
-        }
-        Sleep(5000);
-
-        //Voltar cor para bege
-        for(int j=0;j<6; j++){
-            for(int i=0; i<5; i++)
-            {
-                if(quadrados[j][i])
-                {
-                    glColor3f(0.91f, 0.91f, 0.70f); 
-                    DesenhaQuadrado(25+(80*i),25+(80*i),15+(80*(i+1)),15+(80*(i+1)),80*(j+1),10+(80*j),10+(80*j),80*(j+1)); 
-                } 
-            }
-        }
-
-        //Verificação de erros
-        /*while(cliques<10)
+void MemoriaFacil()
+{
+    TelaMemoriaFacil();
+    if(!primeiro_desenho)
+    {
+        /*int i = (xclick-25)/80, j = (yclick-10)/80;
+        if(quadrados[j][i]==1)
         {
-            int iclick = (xclick-25)/80, jclick = (yclick-10)/80;
-            if(quadrados[iclick][jclick]==1)
-            {
-                acertos++;
-                DesenhaQuadrado(25+(80*iclick),25+(80*iclick),15+(80*(iclick+1)),15+(80*(iclick+1)),80*(jclick+1),10+(80*jclick),10+(80*jclick),80*(jclick+1)); 
-            }
-            else
-            {
-                erros++;
-            }
-            cliques++;
-        }*/
-        //fazer logica para chamar handlemouse    
-        rodadas++;
-    //}
-    //cout << "Erros " << erros << " Acertos " << acertos << endl;
+            glColor3f(0.0f, 0.1f, 0.7f); 
+            DesenhaQuadrado(25+(80*i),25+(80*i),15+(80*(i+1)),15+(80*(i+1)),80*(j+1),10+(80*j),10+(80*j),80*(j+1));
+            quadrados[j][i] = 2; 
+            acertos++;
+        }
+        else
+        {
+            //cout << "CLIQUEI ERRADO" << endl;
+            erros++;
+        }*/   
+        int j = (xclick-25)/80, i = (yclick-10)/80;
+        if(quadrados[i][j]==1)
+        {
+            glColor3f(0.0f, 0.1f, 0.7f); 
+            DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1));
+            quadrados[i][j] = 2; 
+            acertos++;
+        }
+        else
+        {
+            //cout << "CLIQUEI ERRADO" << endl;
+            erros++;
+        }
+        glFlush();
+    }
+    return;
 }
 
 void Desenha(void)
@@ -145,7 +156,6 @@ void Desenha(void)
             break;
      }
      glFlush();
-     glutPostRedisplay();
 }
 
 void MenuMemoria(int op)
@@ -224,25 +234,22 @@ void HandleMouse(int button, int state, int x, int y)
 {
     yclick = 500-y;
     xclick = x;
-    cout << "x = " << x << "  y = " << y << endl;
-    //int iclick = (xclick-25)/80, jclick = (yclick-10)/80;
-    //cout << "i = " << iclick << " j = " << jclick << endl;
-	//glutPostRedisplay();
 }
 
 int main(int argc, char** argv)
 {
-     glutInit(&argc, argv);
-     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-     glutInitWindowSize(450,500);
-     glutInitWindowPosition(10,10);
-     glutCreateWindow("Primeiro Trabalho - Joguinhos simples");
-     glutDisplayFunc(Desenha);
-     glutMouseFunc(HandleMouse);
-     //glutReshapeFunc(AlteraTamanhoJanela);
-     //glutMotionFunc(MoveMouseBotaoPressionado);
-     //glutPassiveMotionFunc(MoveMouse);
-     //glutSpecialFunc(TeclasEspeciais);
-     Inicializa();
-     glutMainLoop();
+    srand(time(NULL));
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(450,500);
+    glutInitWindowPosition(10,10);
+    glutCreateWindow("Primeiro Trabalho - Joguinhos simples");
+    glutDisplayFunc(Desenha);
+    glutMouseFunc(HandleMouse);
+    //glutReshapeFunc(AlteraTamanhoJanela);
+    //glutMotionFunc(MoveMouseBotaoPressionado);
+    //glutPassiveMotionFunc(MoveMouse);
+    //glutSpecialFunc(TeclasEspeciais);
+    Inicializa();
+    glutMainLoop();
 }
