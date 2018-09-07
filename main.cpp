@@ -6,12 +6,12 @@
 #include <ctime>
 using namespace std;
 
-char texto[30];
 GLint tipo;
 int xclick, yclick;
 int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques = 10;
+int bombas = 0, embarcacoes = 0, tabuleiro[40][40];
 bool primeiro_desenho = true, clicado = false;
-
+char texto[50];
 
 void display()
 {
@@ -29,6 +29,26 @@ void DesenhaQuadrado(int x1, int x2, int x3, int x4, int y1, int y2, int y3,int 
         glVertex2f(x4, y4);
      glEnd();
      glFlush();
+}
+
+void textDraw()
+{
+    glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glColor3d(1, 1, 1);
+
+    glPushMatrix();
+
+	glRasterPos2f(150, 150);
+
+	for (char *i = texto; *i != 0; i++)
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *i);
+
+	glPopMatrix();
+
+	glFlush();
+
 }
 
 void TelaMemoriaFacil()
@@ -142,8 +162,9 @@ void MemoriaFacil(int x, int y)
     }
     else
     {
-        //fazer texto aparecer na tela
-        cout << "Erros: " << erros << " Acertos: " << acertos << endl;
+        sprintf(texto, "Erros: %d Acertos: %d ",erros, acertos);
+        textDraw();
+        tipo = 0;
     }
     return;
 }
@@ -259,45 +280,95 @@ void MemoriaDificil(int x, int y)
     }
     else
     {
-        //fazer texto aparecer na tela
-        cout << "Erros: " << erros << " Acertos: " << acertos << endl;
+        sprintf(texto, "Erros: %d Acertos: %d ",erros, acertos);
+        textDraw();
+        tipo = 0;
     }
     return;
 }
 
+void TelaBatalhaNaval()
+{
+    glColor3f(0.91f, 0.91f, 0.70f); 
+    for(int i=0;i<40; i++)
+    {
+        for(int j=0; j<40; j++)
+        {
+            DesenhaQuadrado(5+(11*j),5+(11*j),2+(11*(j+1)),2+(11*(j+1)),11*(i+1),2+(11*i),2+(11*i),11*(i+1)); 
+            tabuleiro[i][j] = 0;
+        }
+    }
+    int col_rand,lin_rand, embarcacao_rand;
+    while(bombas<10)
+    {
+        col_rand = (rand()%40);
+        lin_rand = (rand()%40);
+        tabuleiro[lin_rand][col_rand] = 1;
+        glColor3f(0.91f, 0.0f, 0.0f); 
+        DesenhaQuadrado(5+(11*col_rand),5+(11*col_rand),2+(11*(col_rand+1)),2+(11*(col_rand+1)),11*(lin_rand+1),2+(11*lin_rand),2+(11*lin_rand),11*(lin_rand+1)); 
+        bombas++;
+    }
+    while(embarcacoes<10)
+    {
+        col_rand = (rand()%40);
+        lin_rand = (rand()%40);
+        if(tabuleiro[lin_rand][col_rand] != 1)
+        {
+            embarcacao_rand = rand()%4;
+            /*switch(embarcacao_rand)
+            {
+                case 0: //Destroyer
+                //se coluna menor que 40-length
+                case 1: //Porta-aviões
+                case 2: //Lança de ataque
+                case 3: //Submarino
+                case 4: //Corveta
+            }*/
+        }
+    }
+    
+}
+
 void Desenha(void)
 {
-     glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-     switch(tipo)
-     {
-        case 1:
-            TelaMemoriaFacil();
-            break;
-        case 2:
-            TelaMemoriaDificil();
-            break;
-     }
-     glFlush();
+    switch(tipo)
+    {
+    case 0: 
+        sprintf(texto, " ");
+        textDraw();
+        break;
+    case 1:
+        TelaMemoriaFacil();
+        break;
+    case 2:
+        TelaMemoriaDificil();
+        break;
+    case 5:
+        TelaBatalhaNaval();
+    }
+    glFlush();
 }
 
 void MenuMemoria(int op)
 {
-   switch(op) {
-            case 00:
-                tipo = 1;
-                erros = 0;
-                acertos = 0; rodadas = 0;
-                cliques = 10;
-                primeiro_desenho = true;
-                break;
-            case 01:
-                tipo = 2;
-                erros = 0;
-                acertos = 0; rodadas = 0;
-                cliques = 10;
-                primeiro_desenho = true;
-                break;
+   switch(op)
+    {
+        case 00:
+            tipo = 1;
+            erros = 0;
+            acertos = 0; rodadas = 0;
+            cliques = 10;
+            primeiro_desenho = true;
+            break;
+        case 01:
+            tipo = 2;
+            erros = 0;
+            acertos = 0; rodadas = 0;
+            cliques = 10;
+            primeiro_desenho = true;
+            break;
     }
     glutPostRedisplay();
 }
@@ -318,15 +389,17 @@ void MenuEmOrdem(int op)
 // Gerenciamento do menu principal
 void MenuPrincipal(int op)
 {
-    switch(op) {
-            case 2:
-                //chamar batalha naval
-                break;
-            case 3:
-                glutDestroyWindow(glutGetWindow());
-                exit(0);
-                break;
+    switch(op) 
+    {
+        case 2:
+            tipo = 5;
+            break;
+        case 3:
+            glutDestroyWindow(glutGetWindow());
+            exit(0);
+            break;
     }
+    glutPostRedisplay();
 }
 
 // Criacao do Menu
