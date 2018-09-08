@@ -8,7 +8,7 @@ using namespace std;
 
 GLint tipo;
 int xclick, yclick;
-int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques = 10;
+int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques, num_coloridos;
 int bombas = 0, embarcacoes = 0, tabuleiro[40][40], vidas = 3;
 int numeros [15][2], qtd_numeros, posicoes[15][2], aparece = 0, numeros_imprimir[15];
 bool primeiro_desenho = true, clicado = false, ganhou = true, crescente;
@@ -52,7 +52,7 @@ void textDraw()
 
 void TelaMemoriaFacil()
 {
-    int num_coloridos = 0; 
+    num_coloridos = 0; 
     if (primeiro_desenho)
     {
         primeiro_desenho = false;
@@ -65,22 +65,26 @@ void TelaMemoriaFacil()
             }
         }
         Sleep(2000);
-        for(int i=0;i<6; i++)
-        {
-            for(int j=0; j<5; j++)
+        while(num_coloridos<5)
+        {    
+            for(int i=0;i<6; i++)
             {
-                if(num_coloridos<10 && ((rand() % 10) > 5))
+                for(int j=0; j<5; j++)
                 {
-                    quadrados[i][j] = 1;
-                    num_coloridos++;
+                    if(num_coloridos<10 && ((rand() % 10) > 5))
+                    {
+                        quadrados[i][j] = 1;
+                        num_coloridos++;
+                    }
+                    else
+                    {
+                        quadrados[i][j] = 0;
+                    }
+                    
                 }
-                else
-                {
-                    quadrados[i][j] = 0;
-                }
-                
-            }
-        }   
+            }   
+        }
+        cliques = num_coloridos;
         for(int i=0;i<6; i++)
         {
             for(int j=0; j<5; j++)
@@ -162,7 +166,6 @@ void MemoriaFacil(int x, int y)
     }
     else
     {
-        cout << "else" << endl;
         sprintf(texto, "Erros: %d Acertos: %d ",erros, acertos);
         textDraw();
     }
@@ -171,7 +174,7 @@ void MemoriaFacil(int x, int y)
 
 void TelaMemoriaDificil()
 {
-    int num_coloridos = 0; 
+    num_coloridos = 0; 
     if (primeiro_desenho)
     {
         primeiro_desenho = false;
@@ -184,22 +187,26 @@ void TelaMemoriaDificil()
             }
         }
         Sleep(2000);
-        for(int i=0;i<10; i++)
+        while(num_coloridos<5)
         {
-            for(int j=0; j<8; j++)
+            for(int i=0;i<10; i++)
             {
-                if(num_coloridos<10 && ((rand() % 10) > 8))
+                for(int j=0; j<8; j++)
                 {
-                    quadrados[i][j] = 1;
-                    num_coloridos++;
+                    if(num_coloridos<10 && ((rand() % 10) > 8))
+                    {
+                        quadrados[i][j] = 1;
+                        num_coloridos++;
+                    }
+                    else
+                    {
+                        quadrados[i][j] = 0;
+                    }
+                    
                 }
-                else
-                {
-                    quadrados[i][j] = 0;
-                }
-                
-            }
-        }   
+            }   
+        }
+        cliques = num_coloridos;
         for(int i=0;i<10; i++)
         {
             for(int j=0; j<8; j++)
@@ -286,7 +293,7 @@ void MemoriaDificil(int x, int y)
     return;
 }
 
-void TelaEmOrdem()
+/*void TelaEmOrdem()
 {
     if(primeiro_desenho)
     {  
@@ -592,7 +599,7 @@ void BatalhaNaval(int x, int y)
         //tipo = 0;
     }
     return;
-}
+}*/
 
 void Desenha(void)
 {
@@ -610,7 +617,7 @@ void Desenha(void)
     case 2:
         TelaMemoriaDificil();
         break;
-    case 3:
+    /*case 3:
         TelaEmOrdem();
         break;
     case 4:
@@ -618,7 +625,7 @@ void Desenha(void)
         break;
     case 5:
         TelaBatalhaNaval();
-        break;
+        break;*/
     }
     glFlush();
 }
@@ -647,7 +654,7 @@ void MenuMemoria(int op)
 
 void MenuEmOrdem(int op)
 {
-   switch(op) {
+   /*switch(op) {
             case 10:
                 tipo = 3;
                 primeiro_desenho = true;
@@ -658,7 +665,7 @@ void MenuEmOrdem(int op)
                 primeiro_desenho = true;
                 crescente = false;
                 break;
-    }
+    }*/
     glutPostRedisplay();
 }
 
@@ -733,13 +740,13 @@ void HandleMouse(int button, int state, int x, int y)
                 break;
             case 2:
                 MemoriaDificil(xclick,yclick);
-            case 3:
+            /*case 3:
                 EmOrdem(xclick,yclick);
             case 4: 
                 EmOrdem(xclick,yclick);
             case 5:
                 BatalhaNaval(xclick, yclick);
-                break;
+                break;*/
         }
 	}
 }
