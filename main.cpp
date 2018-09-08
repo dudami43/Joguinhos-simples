@@ -10,6 +10,7 @@ GLint tipo;
 int xclick, yclick;
 int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques = 10;
 int bombas = 0, embarcacoes = 0, tabuleiro[40][40], vidas = 3;
+int numeros [15][2], qtd_numeros, posicoes[15][2], aparece = 0;
 bool primeiro_desenho = true, clicado = false, ganhou = true;
 char texto[50];
 
@@ -33,22 +34,20 @@ void DesenhaQuadrado(int x1, int x2, int x3, int x4, int y1, int y2, int y3,int 
 
 void textDraw()
 {
+    cout << texto << endl;
     glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glColor3d(1, 1, 1);
 
     glPushMatrix();
-
-	glRasterPos2f(150, 150);
-
-	for (char *i = texto; *i != 0; i++)
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *i);
-
+	    glRasterPos2f(150, 150);
+        for (char *i = texto; *i != 0; i++)
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *i);
 	glPopMatrix();
 
 	glFlush();
-
+    tipo = 0;
 }
 
 void TelaMemoriaFacil()
@@ -137,7 +136,7 @@ void MemoriaFacil(int x, int y)
         {
             if(!primeiro_desenho)
             { 
-                int j = (xclick-25)/80, i = (yclick-10)/80;
+                int j = (x-25)/80, i = (y-10)/80;
                 cliques--;
                 if(quadrados[i][j]==1)
                 {
@@ -158,13 +157,14 @@ void MemoriaFacil(int x, int y)
             cliques = 10;
             primeiro_desenho = true;
             rodadas++;
+            cout << rodadas << endl;
         }
     }
     else
     {
+        cout << "else" << endl;
         sprintf(texto, "Erros: %d Acertos: %d ",erros, acertos);
         textDraw();
-        tipo = 0;
     }
     return;
 }
@@ -255,7 +255,7 @@ void MemoriaDificil(int x, int y)
         {
             if(!primeiro_desenho)
             { 
-                int j = (xclick-30)/49, i = (yclick-20)/49;
+                int j = (x-30)/49, i = (y-20)/49;
                 cliques--;
                 if(quadrados[i][j]==1)
                 {
@@ -282,12 +282,143 @@ void MemoriaDificil(int x, int y)
     {
         sprintf(texto, "Erros: %d Acertos: %d ",erros, acertos);
         textDraw();
-        tipo = 0;
     }
     return;
 }
 
-void TelaBatalhaNaval()
+void TelaEmOrdem()
+{
+    if(primeiro_desenho)
+    {  
+        primeiro_desenho = false;  
+        int cont = 0;
+        qtd_numeros = ((rand()%15)+1);
+        char texto[2];
+        cout << " qtd_numeros " << qtd_numeros << endl;
+        for(int i=0; i<qtd_numeros; i++)
+        {
+            numeros[i][0] = (rand()%100);
+            numeros[i][1] = 0;
+            cout << i << " " << numeros[i][0] << endl;
+        }
+
+        for(int i=0; i<5; i++)
+        {
+            for(int j=0;j<3;j++)
+            {
+                posicoes[cont][0] = 50+(i*50);
+                posicoes[cont][1] = 450-(j*50);
+                cout << "posicoes" << posicoes[cont][0] << " " << posicoes[cont][1] << endl;
+                sprintf(texto, "%d",numeros[cont][0]);
+                glPushMatrix();
+                    glRasterPos2f(50+(i*50),450-(j*50));
+                    for (char *x = texto; *x != 0; x++)
+                        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *x);
+                glPopMatrix();
+                cont++;
+                cout << "cont " << cont << endl;
+                if (cont==qtd_numeros){ cout << "if 1" << endl; break;} 
+                //bool x = cont==qtd_numeros;
+                //cout << x << endl;
+            }
+            if (cont==qtd_numeros){ cout << " if 2 " <<endl; break;}
+        }
+        glFlush();
+        Sleep(2000);
+        glClear(GL_COLOR_BUFFER_BIT);
+        for(int i=0;i<qtd_numeros;i++)
+        {
+            int x = posicoes[i][0];
+            int y = posicoes[i][1];
+            DesenhaQuadrado(x,x,x+40,x+40,y+40,y,y,y+40);
+        }
+
+    }
+    else
+    {
+        for(int i=0;i<qtd_numeros;i++)
+        {
+            int x = posicoes[i][0];
+            int y = posicoes[i][1];
+            if(numeros[i][1]==0)
+                DesenhaQuadrado(x,x,x+40,x+40,y+40,y,y,y+40);
+            else
+            {
+                sprintf(texto, "%d",numeros[i][0]);
+                glPushMatrix();
+                    glRasterPos2f(x,y);
+                    for (char *n = texto; *n != 0; n++)
+                        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *n);
+                glPopMatrix();
+            }
+        }   
+    }
+    
+}
+
+void EmOrdem(bool crescente, int x, int y)
+{
+    ganhou = true;
+    TelaEmOrdem();
+    for(int i=0;i<qtd_numeros;i++)
+    {
+        if(numeros[i][1]==0)
+        {
+            ganhou = false;
+            break;
+        } 
+    }
+    if(ganhou)
+    {
+        sprintf(texto, "Você conseguiu!!!");
+        textDraw();
+    }
+    else
+    {
+        int posicaoClicada;
+        cout << "crescente " << crescente << endl;
+        if(crescente)
+        {
+            cout << "if\n";
+            int menor = -1;
+            for(int i=0;i<qtd_numeros;i++)
+            {
+                cout << "Agora "  << i << " " << numeros[i][0] << " " << endl;
+                /*if(numeros[i][1]<=menor)
+                {
+                    menor = numeros[i][1];
+                    posicaoClicada = i;
+                    cout << "Menor " << menor << " Posicao " << posicaoClicada << endl;
+                }*/
+            }
+            /*if(numeros[posicaoClicada][0]==menor)
+            {
+                numeros[posicaoClicada][1] = 1;
+            } */
+        }
+        else
+        {
+            cout << "else\n";
+            int maior = 1000;
+            for(int i=0;i<qtd_numeros;i++)
+            {
+                cout << "Agora " << numeros[i][0] << " " << endl;
+                /*if(numeros[i][1]>=maior)
+                {
+                    maior = numeros[i][1];
+                    posicaoClicada = i;
+                    cout << "Maior " << maior << " Posicao " << posicaoClicada << endl;
+                }*/
+            } 
+            /*if(numeros[posicaoClicada][0]==maior)
+            {
+                numeros[posicaoClicada][1] = 1;
+            }*/
+        }
+    }
+}
+
+/*void TelaBatalhaNaval()
 {
     if(primeiro_desenho)
     {
@@ -412,6 +543,8 @@ void BatalhaNaval(int x, int y)
             if(tabuleiro[i][j] == 1)
             {
                 ganhou = false;
+                j = 40;
+                i = 40;
             } 
         }
     }
@@ -448,7 +581,7 @@ void BatalhaNaval(int x, int y)
         //tipo = 0;
     }
     return;
-}
+}*/
 
 void Desenha(void)
 {
@@ -466,9 +599,15 @@ void Desenha(void)
     case 2:
         TelaMemoriaDificil();
         break;
-    case 5:
-        TelaBatalhaNaval();
+    case 3:
+        TelaEmOrdem();
         break;
+    case 4:
+        TelaEmOrdem();
+        break;
+    /*case 5:
+        TelaBatalhaNaval();
+        break;*/
     }
     glFlush();
 }
@@ -499,10 +638,12 @@ void MenuEmOrdem(int op)
 {
    switch(op) {
             case 10:
-                //chamar em ordem crescente
+                tipo = 3;
+                primeiro_desenho = true;
                 break;
             case 11:
-                //chamar em ordem decrescente
+                tipo = 4;
+                primeiro_desenho = true;
                 break;
     }
     glutPostRedisplay();
@@ -513,11 +654,11 @@ void MenuPrincipal(int op)
 {
     switch(op) 
     {
-        case 2:
+        /*case 2:
             tipo = 5;
             vidas = 3;
             primeiro_desenho = true;
-            break;
+            break;*/
         case 3:
             glutDestroyWindow(glutGetWindow());
             exit(0);
@@ -575,13 +716,17 @@ void HandleMouse(int button, int state, int x, int y)
         switch(tipo)
         {
             case 1:
-                MemoriaFacil(xclick,yclick);;
+                MemoriaFacil(xclick,yclick);
                 break;
             case 2:
                 MemoriaDificil(xclick,yclick);
-            case 5:
+            case 3:
+                EmOrdem(true,xclick,yclick);
+            case 4: 
+                EmOrdem(false,xclick,yclick);
+            /*case 5:
                 BatalhaNaval(xclick, yclick);
-                break;
+                break;*/
         }
 	}
 }
