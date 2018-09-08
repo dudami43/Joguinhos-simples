@@ -10,8 +10,8 @@ GLint tipo;
 int xclick, yclick;
 int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques = 10;
 int bombas = 0, embarcacoes = 0, tabuleiro[40][40], vidas = 3;
-int numeros [15][2], qtd_numeros, posicoes[15][2], aparece = 0;
-bool primeiro_desenho = true, clicado = false, ganhou = true;
+int numeros [15][2], qtd_numeros, posicoes[15][2], aparece = 0, numeros_imprimir[15];
+bool primeiro_desenho = true, clicado = false, ganhou = true, crescente;
 char texto[50];
 
 void display()
@@ -297,7 +297,7 @@ void TelaEmOrdem()
         cout << " qtd_numeros " << qtd_numeros << endl;
         for(int i=0; i<qtd_numeros; i++)
         {
-            numeros[i][0] = (rand()%100);
+            numeros_imprimir[i] = numeros[i][0] = (rand()%100);
             numeros[i][1] = 0;
             cout << i << " " << numeros[i][0] << endl;
         }
@@ -318,8 +318,6 @@ void TelaEmOrdem()
                 cont++;
                 cout << "cont " << cont << endl;
                 if (cont==qtd_numeros){ cout << "if 1" << endl; break;} 
-                //bool x = cont==qtd_numeros;
-                //cout << x << endl;
             }
             if (cont==qtd_numeros){ cout << " if 2 " <<endl; break;}
         }
@@ -344,7 +342,7 @@ void TelaEmOrdem()
                 DesenhaQuadrado(x,x,x+40,x+40,y+40,y,y,y+40);
             else
             {
-                sprintf(texto, "%d",numeros[i][0]);
+                sprintf(texto, "%d",numeros_imprimir[i]);
                 glPushMatrix();
                     glRasterPos2f(x,y);
                     for (char *n = texto; *n != 0; n++)
@@ -356,7 +354,7 @@ void TelaEmOrdem()
     
 }
 
-void EmOrdem(bool crescente, int x, int y)
+void EmOrdem(int x, int y)
 {
     ganhou = true;
     TelaEmOrdem();
@@ -375,50 +373,63 @@ void EmOrdem(bool crescente, int x, int y)
     }
     else
     {
-        int posicaoClicada;
+        int numero, posicao;
         cout << "crescente " << crescente << endl;
         if(crescente)
         {
             cout << "if\n";
-            int menor = -1;
+            numero = 1000;
             for(int i=0;i<qtd_numeros;i++)
             {
-                cout << "Agora "  << i << " " << numeros[i][0] << " " << endl;
-                /*if(numeros[i][1]<=menor)
+                if(numeros[i][0]<=numero)
                 {
-                    menor = numeros[i][1];
-                    posicaoClicada = i;
-                    cout << "Menor " << menor << " Posicao " << posicaoClicada << endl;
-                }*/
+                    numero = numeros[i][0];
+                    cout << "Menor " << numero << endl;
+                }
             }
-            /*if(numeros[posicaoClicada][0]==menor)
+            for(int i=0;i<qtd_numeros;i++)
             {
-                numeros[posicaoClicada][1] = 1;
-            } */
+                if(x>=posicoes[i][0] && x<=posicoes[i][0]+40 && y>=posicoes[i][1] && y<=posicoes[i][1]+40)
+                {
+                    if(numero==numeros[i][0])
+                    {
+                        numeros[i][0] = 1000;
+                        numeros[i][1] = 1;
+                        break;
+                    }
+                }
+            }
+            
         }
         else
         {
             cout << "else\n";
-            int maior = 1000;
+            numero = -1;
             for(int i=0;i<qtd_numeros;i++)
             {
-                cout << "Agora " << numeros[i][0] << " " << endl;
-                /*if(numeros[i][1]>=maior)
+                if(numeros[i][0]>=numero)
                 {
-                    maior = numeros[i][1];
-                    posicaoClicada = i;
-                    cout << "Maior " << maior << " Posicao " << posicaoClicada << endl;
-                }*/
+                    numero = numeros[i][0];
+                    cout << "Maior " << numero << endl;
+                }
             } 
-            /*if(numeros[posicaoClicada][0]==maior)
+            for(int i=0;i<qtd_numeros;i++)
             {
-                numeros[posicaoClicada][1] = 1;
-            }*/
+                if(x>=posicoes[i][0] && x<=posicoes[i][0]+40 && y>=posicoes[i][1] && y<=posicoes[i][1]+40)
+                {
+                    if(numero==numeros[i][0])
+                    {
+                        numeros[i][0] = -1;
+                        numeros[i][1] = 1;
+                        break;
+                    }
+                }
+            }
         }
     }
 }
 
-/*void TelaBatalhaNaval()
+void TelaBatalhaNaval()
 {
     if(primeiro_desenho)
     {
@@ -581,7 +592,7 @@ void BatalhaNaval(int x, int y)
         //tipo = 0;
     }
     return;
-}*/
+}
 
 void Desenha(void)
 {
@@ -605,9 +616,9 @@ void Desenha(void)
     case 4:
         TelaEmOrdem();
         break;
-    /*case 5:
+    case 5:
         TelaBatalhaNaval();
-        break;*/
+        break;
     }
     glFlush();
 }
@@ -640,10 +651,12 @@ void MenuEmOrdem(int op)
             case 10:
                 tipo = 3;
                 primeiro_desenho = true;
+                crescente = true;
                 break;
             case 11:
                 tipo = 4;
                 primeiro_desenho = true;
+                crescente = false;
                 break;
     }
     glutPostRedisplay();
@@ -654,11 +667,11 @@ void MenuPrincipal(int op)
 {
     switch(op) 
     {
-        /*case 2:
+        case 2:
             tipo = 5;
             vidas = 3;
             primeiro_desenho = true;
-            break;*/
+            break;
         case 3:
             glutDestroyWindow(glutGetWindow());
             exit(0);
@@ -721,12 +734,12 @@ void HandleMouse(int button, int state, int x, int y)
             case 2:
                 MemoriaDificil(xclick,yclick);
             case 3:
-                EmOrdem(true,xclick,yclick);
+                EmOrdem(xclick,yclick);
             case 4: 
-                EmOrdem(false,xclick,yclick);
-            /*case 5:
+                EmOrdem(xclick,yclick);
+            case 5:
                 BatalhaNaval(xclick, yclick);
-                break;*/
+                break;
         }
 	}
 }
