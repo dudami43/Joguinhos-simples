@@ -14,13 +14,6 @@ int numeros [15][2], qtd_numeros, posicoes[15][2], aparece = 0, numeros_imprimir
 bool primeiro_desenho = true, clicado = false, ganhou = true, crescente;
 char texto[50];
 
-void display()
-{
-    glClearColor( 0, 0, 0, 1 );
-    glClear( GL_COLOR_BUFFER_BIT );
-    glutSwapBuffers();
-}
-
 void DesenhaQuadrado(int x1, int x2, int x3, int x4, int y1, int y2, int y3,int y4)
 {
      glBegin(GL_QUADS);
@@ -127,8 +120,8 @@ void TelaMemoriaFacil()
                 }
             }
         }
-        glFlush();
     }
+    glFlush();
     return;
 }
 
@@ -160,7 +153,8 @@ void MemoriaFacil(int x, int y)
         {
             primeiro_desenho = true;
             rodadas++;
-            cout << rodadas << endl;
+            glutPostRedisplay();
+            //cout << rodadas << endl;
         }
     }
     else
@@ -248,8 +242,8 @@ void TelaMemoriaDificil()
                 }
             }
         }
-        glFlush();
     }
+    glFlush();
     return;
 }
 
@@ -281,6 +275,7 @@ void MemoriaDificil(int x, int y)
         {
             primeiro_desenho = true;
             rodadas++;
+            glutPostRedisplay();
         }
     }
     else
@@ -434,11 +429,12 @@ void EmOrdem(int x, int y)
     }
 }
 
-/*void TelaBatalhaNaval()
+void TelaBatalhaNaval()
 {
     if(primeiro_desenho)
     {
         primeiro_desenho = false;
+        cout << primeiro_desenho << endl;
         glColor3f(0.91f, 0.91f, 0.70f); 
         for(int i=0;i<40; i++)
         {
@@ -453,6 +449,7 @@ void EmOrdem(int x, int y)
         
         while(embarcacoes<10)
         {
+            cout << "Criando embarcações" << endl;
             col_rand = (rand()%40);
             lin_rand = (rand()%40);
             embarcacao_rand = rand()%4;
@@ -511,6 +508,7 @@ void EmOrdem(int x, int y)
         }
         while(bombas<10)
         {
+            cout << "Criando bombas" << endl;
             col_rand = (rand()%40);
             lin_rand = (rand()%40);
             if(tabuleiro[lin_rand][col_rand]!=1)
@@ -544,14 +542,15 @@ void EmOrdem(int x, int y)
                 }
             }
         }
-        glFlush();
     }
+    glFlush();
     return;
 }
 
 void BatalhaNaval(int x, int y)
 {
     ganhou = true;
+    TelaBatalhaNaval();
     for(int i=0; i<40; i++)
     {
         for(int j=0; j<40; j++)
@@ -578,8 +577,6 @@ void BatalhaNaval(int x, int y)
                 tabuleiro[i][j] = 4; 
                 vidas--;
             } 
-            glFlush();
-            glutPostRedisplay();
         }     
     }
     else
@@ -596,7 +593,7 @@ void BatalhaNaval(int x, int y)
         //tipo = 0;
     }
     return;
-}*/
+}
 
 void Desenha(void)
 {
@@ -623,9 +620,9 @@ void Desenha(void)
     case 4:
         EmOrdem(xclick,yclick);
         break;
-    //case 5:
-        //TelaBatalhaNaval;
-        //break;
+    case 5:
+        BatalhaNaval(xclick,yclick);
+        break;
     }
     glFlush();
 }
