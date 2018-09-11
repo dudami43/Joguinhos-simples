@@ -158,7 +158,6 @@ void MemoriaFacil(int x, int y)
         }
         else
         {
-            cliques = 10;
             primeiro_desenho = true;
             rodadas++;
             cout << rodadas << endl;
@@ -280,7 +279,6 @@ void MemoriaDificil(int x, int y)
         }
         else
         {
-            cliques = 10;
             primeiro_desenho = true;
             rodadas++;
         }
@@ -293,7 +291,7 @@ void MemoriaDificil(int x, int y)
     return;
 }
 
-/*void TelaEmOrdem()
+void TelaEmOrdem()
 {
     if(primeiro_desenho)
     {  
@@ -436,7 +434,7 @@ void EmOrdem(int x, int y)
     }
 }
 
-void TelaBatalhaNaval()
+/*void TelaBatalhaNaval()
 {
     if(primeiro_desenho)
     {
@@ -568,7 +566,6 @@ void BatalhaNaval(int x, int y)
     }
     if(!ganhou)
     {
-        TelaBatalhaNaval();
         if(!primeiro_desenho)
         { 
             int j = (x-5)/11, i = (y-2)/11;
@@ -612,20 +609,23 @@ void Desenha(void)
         textDraw();
         break;
     case 1:
-        TelaMemoriaFacil();
+        //TelaMemoriaFacil();
+        MemoriaFacil(xclick, yclick);
         break;
     case 2:
-        TelaMemoriaDificil();
+        //TelaMemoriaDificil();
+        MemoriaDificil(xclick,yclick);
         break;
-    /*case 3:
-        TelaEmOrdem();
+    case 3:
+        //TelaEmOrdem();
+        EmOrdem(xclick,yclick);
         break;
     case 4:
-        TelaEmOrdem();
+        EmOrdem(xclick,yclick);
         break;
-    case 5:
-        TelaBatalhaNaval();
-        break;*/
+    //case 5:
+        //TelaBatalhaNaval;
+        //break;
     }
     glFlush();
 }
@@ -638,14 +638,16 @@ void MenuMemoria(int op)
             tipo = 1;
             erros = 0;
             acertos = 0; rodadas = 0;
-            cliques = 10;
+            cliques = num_coloridos;
+            xclick = yclick = -1;
             primeiro_desenho = true;
             break;
         case 01:
             tipo = 2;
             erros = 0;
             acertos = 0; rodadas = 0;
-            cliques = 10;
+            cliques = num_coloridos;
+            xclick = yclick = -1;
             primeiro_desenho = true;
             break;
     }
@@ -654,7 +656,7 @@ void MenuMemoria(int op)
 
 void MenuEmOrdem(int op)
 {
-   /*switch(op) {
+   switch(op) {
             case 10:
                 tipo = 3;
                 primeiro_desenho = true;
@@ -665,7 +667,7 @@ void MenuEmOrdem(int op)
                 primeiro_desenho = true;
                 crescente = false;
                 break;
-    }*/
+    }
     glutPostRedisplay();
 }
 
@@ -733,9 +735,10 @@ void HandleMouse(int button, int state, int x, int y)
 		clicado = false;
         xclick = x;
 		yclick = 500-y;
-        switch(tipo)
+        /*switch(tipo)
         {
             case 1:
+                puts("CHAMEI CLICANDO...");
                 MemoriaFacil(xclick,yclick);
                 break;
             case 2:
@@ -746,8 +749,8 @@ void HandleMouse(int button, int state, int x, int y)
                 EmOrdem(xclick,yclick);
             case 5:
                 BatalhaNaval(xclick, yclick);
-                break;*/
-        }
+                break;
+        }*/
 	}
 }
 
