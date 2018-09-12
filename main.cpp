@@ -12,6 +12,7 @@ int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques, num_colorid
 int bombas = 0, embarcacoes = 0, tabuleiro[40][40], vidas = 3;
 int numeros [15][2], qtd_numeros, posicoes[15][2], aparece = 0, numeros_imprimir[15];
 bool primeiro_desenho = true, clicado = false, ganhou = true, crescente;
+float cor_r, cor_g, cor_b;
 char texto[50];
 
 void DesenhaQuadrado(int x1, int x2, int x3, int x4, int y1, int y2, int y3,int y4)
@@ -58,6 +59,9 @@ void TelaMemoriaFacil()
             }
         }
         Sleep(2000);
+        cor_r = (rand())/(float(RAND_MAX)+1.0);
+        cor_g = (rand())/(float(RAND_MAX)+1.0);
+        cor_b = (rand())/(float(RAND_MAX)+1.0);
         while(num_coloridos<5)
         {    
             for(int i=0;i<6; i++)
@@ -84,7 +88,7 @@ void TelaMemoriaFacil()
             {
                 if(quadrados[i][j]==1)
                 {
-                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    glColor3f(cor_r, cor_g, cor_b); 
                     DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1)); 
                 } 
             }
@@ -110,7 +114,7 @@ void TelaMemoriaFacil()
             {
                 if(quadrados[i][j]==2)
                 {
-                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    glColor3f(cor_r, cor_g, cor_b); 
                     DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1)); 
                 } 
                 else
@@ -137,7 +141,7 @@ void MemoriaFacil(int x, int y)
                 cliques--;
                 if(quadrados[i][j]==1)
                 {
-                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    glColor3f(cor_r, cor_g, cor_b); 
                     DesenhaQuadrado(25+(80*j),25+(80*j),15+(80*(j+1)),15+(80*(j+1)),80*(i+1),10+(80*i),10+(80*i),80*(i+1));
                     quadrados[i][j] = 2; 
                     acertos++;
@@ -180,6 +184,9 @@ void TelaMemoriaDificil()
             }
         }
         Sleep(2000);
+        cor_r = (rand())/(float(RAND_MAX)+1.0);
+        cor_g = (rand())/(float(RAND_MAX)+1.0);
+        cor_b = (rand())/(float(RAND_MAX)+1.0);
         while(num_coloridos<5)
         {
             for(int i=0;i<10; i++)
@@ -206,7 +213,7 @@ void TelaMemoriaDificil()
             {
                 if(quadrados[i][j]==1)
                 {
-                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    glColor3f(cor_r, cor_g, cor_b); 
                     DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
                 } 
             }
@@ -232,7 +239,7 @@ void TelaMemoriaDificil()
             {
                 if(quadrados[i][j]==2)
                 {
-                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    glColor3f(cor_r, cor_g, cor_b); 
                     DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
                 } 
                 else
@@ -259,7 +266,7 @@ void MemoriaDificil(int x, int y)
                 cliques--;
                 if(quadrados[i][j]==1)
                 {
-                    glColor3f(0.0f, 0.1f, 0.7f); 
+                    glColor3f(cor_r, cor_g, cor_b); 
                     DesenhaQuadrado(30+(49*j),30+(49*j),20+(49*(j+1)),20+(49*(j+1)),49*(i+1),10+(49*i),10+(49*i),49*(i+1));   
                     quadrados[i][j] = 2; 
                     acertos++;
@@ -368,7 +375,7 @@ void EmOrdem(int x, int y)
     }
     if(ganhou)
     {
-        sprintf(texto, "Você conseguiu!!!");
+        sprintf(texto, "Voce conseguiu!!!");
         textDraw();
     }
     else
@@ -581,13 +588,13 @@ void BatalhaNaval(int x, int y)
     }
     else
     {
-        sprintf(texto, "Game Over - You win");
+        sprintf(texto, "Game Over - Voce ganhou");
         textDraw();
         tipo = 0;
     }
     if (vidas == 0)
     {
-        sprintf(texto, "Game Over - You lose");
+        sprintf(texto, "Game Over - Voce perdeu");
         cout << texto << endl;
         textDraw();
         //tipo = 0;
@@ -601,28 +608,25 @@ void Desenha(void)
 
     switch(tipo)
     {
-    case 0: 
-        sprintf(texto, " ");
-        textDraw();
-        break;
-    case 1:
-        //TelaMemoriaFacil();
-        MemoriaFacil(xclick, yclick);
-        break;
-    case 2:
-        //TelaMemoriaDificil();
-        MemoriaDificil(xclick,yclick);
-        break;
-    case 3:
-        //TelaEmOrdem();
-        EmOrdem(xclick,yclick);
-        break;
-    case 4:
-        EmOrdem(xclick,yclick);
-        break;
-    case 5:
-        BatalhaNaval(xclick,yclick);
-        break;
+        case 0: 
+            sprintf(texto, " ");
+            textDraw();
+            break;
+        case 1:
+            MemoriaFacil(xclick, yclick);
+            break;
+        case 2:
+            MemoriaDificil(xclick,yclick);
+            break;
+        case 3:
+            EmOrdem(xclick,yclick);
+            break;
+        case 4:
+            EmOrdem(xclick,yclick);
+            break;
+        case 5:
+            BatalhaNaval(xclick,yclick);
+            break;
     }
     glFlush();
 }
@@ -635,16 +639,12 @@ void MenuMemoria(int op)
             tipo = 1;
             erros = 0;
             acertos = 0; rodadas = 0;
-            cliques = num_coloridos;
-            xclick = yclick = -1;
             primeiro_desenho = true;
             break;
         case 01:
             tipo = 2;
             erros = 0;
             acertos = 0; rodadas = 0;
-            cliques = num_coloridos;
-            xclick = yclick = -1;
             primeiro_desenho = true;
             break;
     }
@@ -721,7 +721,7 @@ void Inicializa (void)
 
 void HandleMouse(int button, int state, int x, int y)
 {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !clicado)
+    /*if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !clicado)
 	{
 		clicado = true;
 		xclick = x;
@@ -732,23 +732,9 @@ void HandleMouse(int button, int state, int x, int y)
 		clicado = false;
         xclick = x;
 		yclick = 500-y;
-        /*switch(tipo)
-        {
-            case 1:
-                puts("CHAMEI CLICANDO...");
-                MemoriaFacil(xclick,yclick);
-                break;
-            case 2:
-                MemoriaDificil(xclick,yclick);
-            /*case 3:
-                EmOrdem(xclick,yclick);
-            case 4: 
-                EmOrdem(xclick,yclick);
-            case 5:
-                BatalhaNaval(xclick, yclick);
-                break;
-        }*/
-	}
+	}*/
+    xclick = x;
+    yclick = 500 - y;
 }
 
 int main(int argc, char** argv)
@@ -761,10 +747,6 @@ int main(int argc, char** argv)
     glutCreateWindow("Primeiro Trabalho - Joguinhos simples");
     glutDisplayFunc(Desenha);
     glutMouseFunc(HandleMouse);
-    //glutReshapeFunc(AlteraTamanhoJanela);
-    //glutMotionFunc(MoveMouseBotaoPressionado);
-    //glutPassiveMotionFunc(MoveMouse);
-    //glutSpecialFunc(TeclasEspeciais);
     Inicializa();
     glutMainLoop();
 }
