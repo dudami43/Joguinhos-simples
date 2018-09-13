@@ -381,17 +381,14 @@ void EmOrdem(int x, int y)
     else
     {
         int numero, posicao;
-        cout << "crescente " << crescente << endl;
         if(crescente)
         {
-            cout << "if\n";
             numero = 1000;
             for(int i=0;i<qtd_numeros;i++)
             {
                 if(numeros[i][0]<=numero)
                 {
                     numero = numeros[i][0];
-                    cout << "Menor " << numero << endl;
                 }
             }
             for(int i=0;i<qtd_numeros;i++)
@@ -402,7 +399,7 @@ void EmOrdem(int x, int y)
                     {
                         numeros[i][0] = 1000;
                         numeros[i][1] = 1;
-                        break;
+                        glutPostRedisplay();
                     }
                 }
             }
@@ -410,14 +407,12 @@ void EmOrdem(int x, int y)
         }
         else
         {
-            cout << "else\n";
             numero = -1;
             for(int i=0;i<qtd_numeros;i++)
             {
                 if(numeros[i][0]>=numero)
                 {
                     numero = numeros[i][0];
-                    cout << "Maior " << numero << endl;
                 }
             } 
             for(int i=0;i<qtd_numeros;i++)
@@ -428,7 +423,7 @@ void EmOrdem(int x, int y)
                     {
                         numeros[i][0] = -1;
                         numeros[i][1] = 1;
-                        break;
+                        glutPostRedisplay();
                     }
                 }
             }
@@ -578,12 +573,17 @@ void BatalhaNaval(int x, int y)
             if(tabuleiro[i][j]==1)
             {
                 tabuleiro[i][j] = 3; 
+                glColor3f(0.0f, 0.0f, 0.9f); 
+                DesenhaQuadrado(5+(11*j),5+(11*j),2+(11*(j+1)),2+(11*(j+1)),11*(i+1),2+(11*i),2+(11*i),11*(i+1)); 
             }
             else if(tabuleiro[i][j]==2)
             {
                 tabuleiro[i][j] = 4; 
                 vidas--;
+                glColor3f(0.9f, 0.f, 0.0f); 
+                DesenhaQuadrado(5+(11*j),5+(11*j),2+(11*(j+1)),2+(11*(j+1)),11*(i+1),2+(11*i),2+(11*i),11*(i+1)); 
             } 
+            glFlush();
         }     
     }
     else
