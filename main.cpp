@@ -157,6 +157,7 @@ void MemoriaFacil(int x, int y)
         {
             primeiro_desenho = true;
             rodadas++;
+            xclick = yclick = -1;
             glutPostRedisplay();
             //cout << rodadas << endl;
         }
@@ -282,6 +283,7 @@ void MemoriaDificil(int x, int y)
         {
             primeiro_desenho = true;
             rodadas++;
+            xclick = yclick = -1;
             glutPostRedisplay();
         }
     }
@@ -721,18 +723,6 @@ void Inicializa (void)
 
 void HandleMouse(int button, int state, int x, int y)
 {
-    /*if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && !clicado)
-	{
-		clicado = true;
-		xclick = x;
-		yclick = y;
-	}
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP && clicado)
-	{
-		clicado = false;
-        xclick = x;
-		yclick = 500-y;
-	}*/
     xclick = x;
     yclick = 500 - y;
 }
