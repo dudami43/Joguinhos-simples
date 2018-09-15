@@ -7,7 +7,7 @@
 using namespace std;
 
 GLint tipo;
-int xclick, yclick;
+int xclick = -1, yclick = -1;
 int quadrados [10][8], erros = 0, acertos = 0, rodadas = 0, cliques, num_coloridos;
 int bombas = 0, embarcacoes = 0, tabuleiro[40][40], vidas = 3;
 int numeros [15][2], qtd_numeros, posicoes[15][2], aparece = 0, numeros_imprimir[15];
@@ -59,9 +59,14 @@ void TelaMemoriaFacil()
             }
         }
         Sleep(2000);
-        cor_r = (rand())/(float(RAND_MAX)+1.0);
-        cor_g = (rand())/(float(RAND_MAX)+1.0);
-        cor_b = (rand())/(float(RAND_MAX)+1.0);
+        cor_r = cor_g = cor_b = 1;
+        while(cor_r>0.9 && cor_g>0.9 && cor_b>0.7)
+        {
+            cor_r = (rand())/(float(RAND_MAX)+1.0);
+            cor_g = (rand())/(float(RAND_MAX)+1.0);
+            cor_b = (rand())/(float(RAND_MAX)+1.0);
+        }
+        
         while(num_coloridos<5)
         {    
             for(int i=0;i<6; i++)
@@ -185,9 +190,13 @@ void TelaMemoriaDificil()
             }
         }
         Sleep(2000);
-        cor_r = (rand())/(float(RAND_MAX)+1.0);
-        cor_g = (rand())/(float(RAND_MAX)+1.0);
-        cor_b = (rand())/(float(RAND_MAX)+1.0);
+        cor_r = cor_g = cor_b = 1;
+        while(cor_r>0.9 && cor_g>0.9 && cor_b>0.7)
+        {
+            cor_r = (rand())/(float(RAND_MAX)+1.0);
+            cor_g = (rand())/(float(RAND_MAX)+1.0);
+            cor_b = (rand())/(float(RAND_MAX)+1.0);
+        }
         while(num_coloridos<5)
         {
             for(int i=0;i<10; i++)
@@ -650,6 +659,7 @@ void MenuMemoria(int op)
             primeiro_desenho = true;
             break;
     }
+    xclick = yclick = -1;
     glutPostRedisplay();
 }
 
