@@ -164,7 +164,6 @@ void MemoriaFacil(int x, int y)
             rodadas++;
             xclick = yclick = -1;
             glutPostRedisplay();
-            //cout << rodadas << endl;
         }
     }
     else
@@ -312,12 +311,10 @@ void TelaEmOrdem()
         int cont = 0;
         qtd_numeros = ((rand()%15)+1);
         char texto[2];
-        cout << " qtd_numeros " << qtd_numeros << endl;
         for(int i=0; i<qtd_numeros; i++)
         {
             numeros_imprimir[i] = numeros[i][0] = (rand()%100);
             numeros[i][1] = 0;
-            cout << i << " " << numeros[i][0] << endl;
         }
 
         for(int i=0; i<5; i++)
@@ -326,7 +323,6 @@ void TelaEmOrdem()
             {
                 posicoes[cont][0] = 50+(i*50);
                 posicoes[cont][1] = 450-(j*50);
-                cout << "posicoes" << posicoes[cont][0] << " " << posicoes[cont][1] << endl;
                 sprintf(texto, "%d",numeros[cont][0]);
                 glPushMatrix();
                     glRasterPos2f(50+(i*50),450-(j*50));
@@ -334,10 +330,9 @@ void TelaEmOrdem()
                         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *x);
                 glPopMatrix();
                 cont++;
-                cout << "cont " << cont << endl;
-                if (cont==qtd_numeros){ cout << "if 1" << endl; break;} 
+                if (cont==qtd_numeros){ break;} 
             }
-            if (cont==qtd_numeros){ cout << " if 2 " <<endl; break;}
+            if (cont==qtd_numeros){ break;}
         }
         glFlush();
         Sleep(2000);
@@ -447,7 +442,6 @@ void TelaBatalhaNaval()
     if(primeiro_desenho)
     {
         primeiro_desenho = false;
-        cout << primeiro_desenho << endl;
         glColor3f(0.91f, 0.91f, 0.70f); 
         for(int i=0;i<40; i++)
         {
@@ -462,7 +456,6 @@ void TelaBatalhaNaval()
         
         while(embarcacoes<10)
         {
-            cout << "Criando embarcações" << endl;
             col_rand = (rand()%40);
             lin_rand = (rand()%40);
             embarcacao_rand = rand()%4;
@@ -477,7 +470,6 @@ void TelaBatalhaNaval()
                         tabuleiro[lin_rand][col_rand] = tabuleiro[lin_rand][col_rand+1] =tabuleiro[lin_rand-1][col_rand+1] = 1;
                         tabuleiro[lin_rand-1][col_rand+1] = tabuleiro[lin_rand-1][col_rand+2]=tabuleiro[lin_rand-1][col_rand+3] = 1;
                         embarcacoes++;
-                        cout << "Embarcação: " << lin_rand << " " << col_rand << endl;
                     }
                 case 1: //Porta-aviões
                     if(lin_rand>0 && col_rand<34 && tabuleiro[lin_rand][col_rand] == 0
@@ -489,7 +481,6 @@ void TelaBatalhaNaval()
                         tabuleiro[lin_rand][col_rand+3] = tabuleiro[lin_rand-1][col_rand+2] = tabuleiro[lin_rand-1][col_rand+3] = 1;
                         tabuleiro[lin_rand-1][col_rand+4] = tabuleiro[lin_rand-1][col_rand+5] = 1;
                         embarcacoes++;
-                        cout << "Embarcação: " << lin_rand << " " << col_rand << endl;
                     }
                 case 2: //Lança de ataque
                     if(lin_rand>0 && col_rand<37 &&  tabuleiro[lin_rand][col_rand] == 0
@@ -497,7 +488,6 @@ void TelaBatalhaNaval()
                     {   
                         tabuleiro[lin_rand][col_rand] = tabuleiro[lin_rand][col_rand+1] = tabuleiro[lin_rand-1][col_rand+2]= 1;
                         embarcacoes++;
-                        cout << "Embarcação: " << lin_rand << " " << col_rand << endl;
                     }
                 case 3: //Submarino
                     if(lin_rand<39 && col_rand<35 && tabuleiro[lin_rand][col_rand] == 0 && tabuleiro[lin_rand][col_rand+1] == 0
@@ -507,7 +497,6 @@ void TelaBatalhaNaval()
                         tabuleiro[lin_rand][col_rand] = tabuleiro[lin_rand][col_rand+1] = tabuleiro[lin_rand][col_rand+2] = 1;
                         tabuleiro[lin_rand][col_rand+3] = tabuleiro[lin_rand][col_rand+4] = tabuleiro[lin_rand+1][col_rand+2] = 1;
                         embarcacoes++;
-                        cout << "Embarcação: " << lin_rand << " " << col_rand << endl;
                     }
                 case 4: //Corveta
                     if(lin_rand>0 && col_rand<38 && tabuleiro[lin_rand][col_rand] == 0 && tabuleiro[lin_rand][col_rand+1] == 0
@@ -515,20 +504,17 @@ void TelaBatalhaNaval()
                     {
                         tabuleiro[lin_rand][col_rand] = tabuleiro[lin_rand][col_rand+1] = tabuleiro[lin_rand-1][col_rand+1]= 1;
                         embarcacoes++;
-                        cout << "Embarcação: " << lin_rand << " " << col_rand << endl;
                     }
             }
         }
         while(bombas<10)
         {
-            cout << "Criando bombas" << endl;
             col_rand = (rand()%40);
             lin_rand = (rand()%40);
             if(tabuleiro[lin_rand][col_rand]!=1)
             {
                 tabuleiro[lin_rand][col_rand] = 2;
                 bombas++;
-                cout << "Bomba: " << lin_rand << " " << col_rand << endl;
             }
         } 
     }
@@ -606,7 +592,6 @@ void BatalhaNaval(int x, int y)
     if (vidas == 0)
     {
         sprintf(texto, "Game Over - Voce perdeu");
-        cout << texto << endl;
         textDraw();
         //tipo = 0;
     }
